@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Select {{ name }} record
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row pb-5">
+    <div class="col-lg-10 mx-lg-auto">
+
+      <h1 class="pt-5 pb-2">Select a {{ name }} table Record</h1>
+
+      <p class="lead alert alert-success">Select one item to edit or delete.</p>
+
+	  <p class="ml-4"><a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Return to the index</a></p>
+
+	  <p><a class="btn btn-outline-secondary" href="{{ url_for('get_table_with_name', name=name) }}">Return to {{ name }} table view</a> </p>
+
+	  <!-- start form - not using WTForms here -->
+	  <form method="POST" id="form2" action="{{ url_for('edit_or_delete', name=name) }}">
+
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				{% for col_name in columns %}
+				<th>{{ col_name }}</th>
+				{% endfor %}
+			</tr>
+
+			{% for item in items %}
+			<tr>
+				<td class="center-align"><input type="radio" name="id" value="{{ item[columns[0]] }}" required></td>
+				{% for col_name in columns %}
+				<td>{{ item[col_name] }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+
+		<div class="form-group lead alert alert-success pb-4">
+          <p>What do you want to do with the selected record?</p>
+
+          <div class="form-check form-check-inline">
+          <label class="form-check-label"><input class="form-check-input" type="radio" name="choice" value="delete" required> Delete it</label>
+          </div>
+          <div class="form-check form-check-inline">
+          <label class="form-check-label"><input class="form-check-input" type="radio" name="choice" value="edit" required> Edit it</label>
+          </div>
+        </div><!-- end form-group -->
+
+		<div class="form-group">
+	        <input class="btn btn-success" type="submit" value="Submit Choice">
+        </div>
+
+		</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{{ name }} table
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row pb-5">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">Table {{ name }}</h1>
+
+		<p class="ml-4"><a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Return to the index page</a></p>
+		<p class="ml-4"><a class="btn btn-outline-secondary" href="{{ url_for('add_item', name=name) }}">Add item</a></p>
+		<p class="ml-4"><a class="btn btn-outline-secondary" href="{{ url_for('select_item', name=name) }}">Select item to edit/delete</a></p>
+
+		<table class="table">
+			<tr>
+				{% for col_name in columns %}
+				<th>{{ col_name }}</th>
+				{% endfor %}
+			</tr>
+
+			{% for item in items %}
+			<tr>
+				{% for col_name in columns %}
+				<td>{{ item[col_name] }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}

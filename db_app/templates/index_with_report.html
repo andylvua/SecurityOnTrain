@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+
+{% block title %}
+Security on a Train
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+        <h1 class="pt-5 pb-2">Security on a Train domain</h1>
+
+        <p class="lead">On this page you can <b>select table</b> from <b>Security on a Train domain</b></p>
+        <br />
+
+        <div class="row">
+        <div class="col-md-8 col-lg-6 mx-md-auto mx-lg-auto">
+            <div class="bg-secondary text-white p-4">
+             {{ render_form(form, action=url_for( 'get_table' ), method='GET') }}
+            </div>
+        </div>
+        </div>
+
+        <br />
+
+        <p><a class="btn btn-primary" href="{{ url_for('report') }}">Get Reports</a></p>
+
+
+  </div>
+</div>
+
+{% endblock %}
+
+</div>

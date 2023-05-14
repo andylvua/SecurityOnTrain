@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% import "bootstrap/form.html" as wtf %}
+
+
+{% block title %}
+Reports
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row pb-5">
+		<div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+		<h1 class="pt-5 pb-2">Reports for Security on a Train Domain</h1>
+
+        <p><a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Return to the index</a></p>
+
+        {% with errors = get_flashed_messages() %}
+            {% if errors %}
+                {% for err in errors %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    {{ err }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <br/>
+            <!--     ------- passenger by camera ------ -->
+        <h4>Passenger that Camera Has Highlighted</h4>
+        <br/>
+        <form class="row g-3"  method="POST">
+            <div class="col-auto">
+                {{ cam_passenger_form.camera.label }} {{ cam_passenger_form.camera(class="form-control") }}
+            </div>
+            <div class="col-auto">
+                {{ cam_passenger_form.seatNum.label }} {{ cam_passenger_form.seatNum(class="form-control") }}
+            </div>
+            <div class="col-auto">
+                <br />
+                {{ cam_passenger_form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+        {% if cam_passenger_form_result %}
+            <p><strong>{{ cam_passenger_form_result }}</strong></p>
+        {% endif %}
+        {% if found_passenger %}
+            <table class="table">
+                <tr>
+                    {% for col_name in passenger_columns %}
+                        <th>{{ col_name }}</th>
+                    {% endfor %}
+                </tr>
+                    <tr>
+                        {% for col_name in passenger_columns %}
+                            <td>{{ found_passenger[col_name] }}</td>
+                        {% endfor %}
+                    </tr>
+            </table>
+        {% endif %}
+        {% if found_sp %}
+            <p>Carriage ID: <b>{{ found_sp['locationId'] }}</b></p>
+            <p><b>Security Personnel in this carriage:</b></p>
+            <table class="table">
+                <tr>
+                    {% for col_name in personnel_columns %}
+                        <th>{{ col_name }}</th>
+                    {% endfor %}
+                </tr>
+                    <tr>
+                        {% for col_name in personnel_columns %}
+                            <td>{{ found_sp[col_name] }}</td>
+                        {% endfor %}
+                    </tr>
+            </table>
+        {% endif %}
+<!--            ------- end of passenger by camera ------ -->
+        <br/>
+
+<!--     ------ security personnel in location form ------     -->
+        <h4>Security Personnel in the Same Location or Shift</h4>
+        <br/>
+        <form class="row g-3"  method="POST">
+            <div class="col-auto">
+                {{ location_form.personnel.label }} {{ location_form.personnel(class="form-control") }}
+            </div>
+            <div class="col-auto">
+                {{ location_form.shift.label }} {{ location_form.shift(class="form-control") }}
+            </div>
+            <div class="col-auto">
+                <br />
+                {{ location_form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+        {% if location_form_result %}
+            <p><strong>{{ location_form_result }}</strong></p>
+        {% endif %}
+        {% if shift_mates %}
+            <p>Security Personnel on this shift:</p>
+            <table class="table table-striped">
+                <tr>
+                    {% for col_name in personnel_columns %}
+                        <th>{{ col_name }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in shift_mates %}
+                    <tr>
+                        {% for col_name in personnel_columns %}
+                            <td>{{ row[col_name] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% elif shift_mates == [] %}
+            <p>No other security personnel on this shift.</p>
+        {% endif %}
+        {% if same_location %}
+            <p>Security Personnel in this location:</p>
+            <table class="table table-striped">
+                <tr>
+                    {% for col_name in personnel_columns %}
+                        <th>{{ col_name }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in same_location %}
+                    <tr>
+                        {% for col_name in personnel_columns %}
+                            <td>{{ row[col_name] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% elif same_location == [] %}
+            <p>No other security personnel in this location on the same shift.</p>
+        {% endif %}
+<!--     ------ security personnel in location form ------     -->
+        <br/>
+<!--     ------- passengers per train ------ -->
+        <h4>Number of Passenger per Train</h4>
+        <table class="table">
+            <tr>
+                <th>Train ID</th>
+                <th>Number of Passengers</th>
+            </tr>
+            {% for row in passengers_per_train %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+<!--     ------- passengers per train end ------ -->
+        <br/>
+
+<!--     ------- coverage percentage ------ -->
+        <h4>Percentage of Covered Places</h4>
+        <p>Covered place by Security Personnel or Camera: <b>{{ percentage }} %</b></p>
+        <p>Covered place by Security Personnel: <b>{{ sp_percentage }} %</b></p>
+        <p>Covered place by Camera: <b>{{ cam_percentage }} %</b></p>
+        <p><b>Uncovered locations:</b></p>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+            </tr>
+            {% for row in uncovered_places %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+<!--    ------- end of coverage percentage ------ -->
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}
